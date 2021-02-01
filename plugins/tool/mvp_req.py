@@ -4,7 +4,8 @@ from nonebot import on_command, CommandSession
 
 SB_MVP = 0
 
-@on_command('sbmvp在哪里', aliases={'sb几', 'sb哪', 'mvp几'}, only_to_me=False)
+
+@on_command('sbmvp在哪里', aliases={'sb几', 'sb哪', 'mvp几', 'sb几线'}, only_to_me=False)
 async def _(session: CommandSession):
     global SB_MVP
     if SB_MVP == 0:
@@ -29,8 +30,8 @@ async def _(session: CommandSession):
     # week=None,
     # day_of_week="mon,tue,wed,thu,fri",
     # hour=7,
-    # minute=52,
-    second=15,
+    minute="10,13,14,40,43,44"
+    # second="10,13,14,40,43,44"
     # start_date=None,
     # end_date=None,
     # timezone=None,
@@ -41,9 +42,11 @@ async def _():
         cqm = ''
         for qq in MVP_LIST:
             cqm += '[CQ:at,qq=' + str(qq) + ']'
+        if cqm != '':
+            cqm += '\n'
         await bot.send_group_msg(
             group_id=QQ_GROUP,
-            message=cqm + '\nsbmvp在' + str(SB_MVP) + '线'
+            message=cqm + 'sbmvp马上要发了，在' + str(SB_MVP) + '线'
         )
 
 
@@ -64,3 +67,4 @@ async def _(session: CommandSession):
 async def _(session: CommandSession):
     MVP_LIST.remove(session.event.user_id)
     await session.send('已取消mvp')
+
