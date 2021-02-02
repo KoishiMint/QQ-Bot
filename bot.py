@@ -1,7 +1,6 @@
 from os import path
 
 import nonebot
-
 import config
 
 if __name__ == '__main__':
