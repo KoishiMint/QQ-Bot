@@ -32,8 +32,8 @@ async def _(session: CommandSession):
     # week=None,
     # day_of_week="mon,tue,wed,thu,fri",
     # hour=7,
-    minute="10,13,14,40,43,44"
-    # second="10,13,14,40,43,44"
+    # minute="10,13,14,40,43,44"
+    second="0, 15, 30, 45"
     # start_date=None,
     # end_date=None,
     # timezone=None,
@@ -47,7 +47,7 @@ async def _():
         if cqm != '':
             cqm += '\n'
         message = cqm + 'sbmvp马上要发了，在' + str(SB_MVP) + '线'
-        send_all_group(message)
+        await send_all_group(message)
 
 
 @on_command('求MVP', aliases={'求mvp', '有mvp吗'}, only_to_me=False)
