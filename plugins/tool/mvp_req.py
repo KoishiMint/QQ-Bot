@@ -2,6 +2,8 @@ import nonebot
 from config import *
 from nonebot import on_command, CommandSession
 
+from plugins.tool.bottool import send_all_group
+
 SB_MVP = 0
 
 
@@ -9,12 +11,12 @@ SB_MVP = 0
 async def _(session: CommandSession):
     global SB_MVP
     if SB_MVP == 0:
-        await session.send('还没有SBMVP呢')
+        await session.send('还没有SBMVP')
     else:
         await session.send('SBMVP在' + str(SB_MVP) + '线')
 
 
-@on_command('sbmvp', aliases={'sb在', 'SBMVP'}, only_to_me=False)
+@on_command('sbmvp', aliases={'sb在', 'SBMVP', 'sb', 'SB'}, only_to_me=False)
 async def _(session: CommandSession):
     if 31 > int(session.current_arg_text) > -1:
         global SB_MVP
@@ -44,10 +46,8 @@ async def _():
             cqm += '[CQ:at,qq=' + str(qq) + ']'
         if cqm != '':
             cqm += '\n'
-        await bot.send_group_msg(
-            group_id=QQ_GROUP,
-            message=cqm + 'sbmvp马上要发了，在' + str(SB_MVP) + '线'
-        )
+        message = cqm + 'sbmvp马上要发了，在' + str(SB_MVP) + '线'
+        send_all_group(message)
 
 
 @on_command('求MVP', aliases={'求mvp', '有mvp吗'}, only_to_me=False)
