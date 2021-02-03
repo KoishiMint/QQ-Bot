@@ -22,7 +22,8 @@ async def _(session: CommandSession):
         global SB_MVP
         SB_MVP = int(session.current_arg_text)
         await session.send('已修改SBMVP在' + str(SB_MVP) + '线')
-
+    else:
+        pass
 
 @nonebot.scheduler.scheduled_job(
     'cron',
