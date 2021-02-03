@@ -1,4 +1,3 @@
-import nonebot
 from datetime import timedelta
 from typing import Collection, Union, Iterable, Pattern, Optional, Dict, Any
 from nonebot.typing import Expression_T
@@ -12,9 +11,9 @@ ACCESS_TOKEN: str = ''
 SECRET: str = ''
 HOST: str = '127.0.0.1'
 PORT: int = 8074
-DEBUG: bool = True
+DEBUG: bool = False
 
-SUPERUSERS: Collection[int] = {1820534362}
+SUPERUSERS: Collection[int] = {1820534362, 675052968}
 
 COMMAND_SEP: Iterable[Union[str, Pattern]] = {'/', '.'}
 
@@ -32,7 +31,6 @@ TOO_MANY_VALIDATION_FAILURES_EXPRESSION: Expression_T = \
 SESSION_CANCEL_EXPRESSION: Expression_T = '好的'
 
 APSCHEDULER_CONFIG: Dict[str, Any] = {'apscheduler.timezone': 'Asia/Shanghai'}
-
 
 __all__ = [
     'API_ROOT',
@@ -60,4 +58,4 @@ __all__ = [
 
 # 用户自定义的配置
 QQ_GROUP = []
-MVP_LIST = []
+MVP_LIST = {}
