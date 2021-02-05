@@ -40,11 +40,15 @@ async def _(session: CommandSession):
             if boss_json['qq_group'] == session.event.group_id and boss_json['boss'] == bosses:
                 reply_list += '[CQ:at,qq=' + str(boss_json['qq']) + '] '
                 config.BOSS_LIST.remove(boss_req)
-    await session.send(reply_list + '\n' +
-                       '[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\n' +
-                       'BOSS:' + split_boss(session.current_arg_text).replace(',', ' ') +
-                       '地点:' + location)
-
+    if reply_list != '':
+        await session.send(reply_list + '\n' +
+                           '[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\n' +
+                           'BOSS:' + split_boss(session.current_arg_text).replace(',', ' ') +
+                           '地点:' + location)
+    else:
+        await session.send('[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\n' +
+                           'BOSS:' + split_boss(session.current_arg_text).replace(',', ' ') +
+                           '地点:' + location)
 
 def get_location(args):
     channel = re.findall(pattern=r'\d+[\u4e00-\u9fa5a-zA-Z]+', string=args)
