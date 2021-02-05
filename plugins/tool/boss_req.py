@@ -7,6 +7,8 @@ import config
 
 @on_command('求', only_to_me=False)
 async def _(session: CommandSession):
+    if not session.state.get('initialized'):
+        session.state['initialized'] = True
     boss = split_boss(session.current_arg_text).split(',')
     boss.remove('')
     boss_json = ''
@@ -28,6 +30,8 @@ async def _(session: CommandSession):
 
 @on_command('谁要', only_to_me=True)
 async def _(session: CommandSession):
+    if not session.state.get('initialized'):
+        session.state['initialized'] = True
     boss = split_boss(session.current_arg_text).split(',')
     boss.remove('')
     location = get_location(session.current_arg_text)
