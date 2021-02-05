@@ -25,7 +25,7 @@ async def _(session: CommandSession):
         await session.send('已成功预约' + split_boss(session.current_arg_text).replace(',', ' '))
 
 
-@on_command('~', only_to_me=True)
+@on_command('谁要', only_to_me=True)
 async def _(session: CommandSession):
     boss = split_boss(session.current_arg_text).split(',')
     boss.remove('')
@@ -77,7 +77,7 @@ async def _(session: CommandSession):
     await session.send(
         'BOSS预约使用帮助\n'
         '使用以下文字来预约boss【求 BOSS名】\n'
-        '使用以下文字来发车boss【臭臭泥~ BOSS名 线路地点】\n'
-        '请注意【求】【臭臭泥~】之后都有一个空格，除线路外不能输入数字\n'
+        '使用以下文字来发车boss【臭臭泥谁要 BOSS名 线路地点】\n'
+        '请注意【求】【臭臭泥谁要】之后都有一个空格，除线路外不能输入数字\n'
         '目前支持的BOSS有:组航、三核、cra、斯乌、大米、路西德、威尔\n'
     )
