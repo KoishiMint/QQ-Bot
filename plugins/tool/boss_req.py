@@ -70,3 +70,14 @@ def split_boss(args):
     if '组航' in args:
         boss += '组航,'
     return boss
+
+
+@on_command('BOSS预约使用帮助', aliases='boss预约使用帮助', only_to_me=False)
+async def _(session: CommandSession):
+    await session.send(
+        'BOSS预约使用帮助\n'
+        '使用以下文字来预约boss【求 BOSS名】\n'
+        '使用以下文字来发车boss【臭臭泥~ BOSS名 线路地点】\n'
+        '请注意【求】【臭臭泥~】之后都有一个空格，除线路外不能输入数字\n'
+        '目前支持的BOSS有:三核、cra、斯乌、大米、路西德、威尔\n'
+    )
