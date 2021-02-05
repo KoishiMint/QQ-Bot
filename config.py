@@ -53,7 +53,8 @@ __all__ = [
     'SESSION_CANCEL_EXPRESSION',
     'APSCHEDULER_CONFIG',
     'QQ_GROUP',
-    'MVP_LIST'
+    'MVP_LIST',
+    'BOSS_LIST'
 ]
 
 # 用户自定义的配置
