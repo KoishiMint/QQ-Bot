@@ -9,7 +9,7 @@ COMMAND_START = {''}
 API_ROOT: str = ''
 ACCESS_TOKEN: str = ''
 SECRET: str = ''
-HOST: str = '127.0.0.1'
+HOST: str = '0.0.0.0'
 PORT: int = 8074
 DEBUG: bool = False
 
@@ -59,3 +59,4 @@ __all__ = [
 # 用户自定义的配置
 QQ_GROUP = []
 MVP_LIST = {}
+BOSS_LIST = []
