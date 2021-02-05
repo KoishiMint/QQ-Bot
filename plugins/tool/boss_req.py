@@ -42,13 +42,12 @@ async def _(session: CommandSession):
                 config.BOSS_LIST.remove(boss_req)
     if reply_list != '':
         await session.send(reply_list + '\n' +
-                           '[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\n' +
-                           'BOSS:' + split_boss(session.current_arg_text).replace(',', ' ') +
+                           '[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\nBOSS:' + split_boss(session.current_arg_text).replace(',', ' ') +
                            '地点:' + location)
     else:
-        await session.send('[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\n' +
-                           'BOSS:' + split_boss(session.current_arg_text).replace(',', ' ') +
+        await session.send('[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\nBOSS:' + split_boss(session.current_arg_text).replace(',', ' ') +
                            '地点:' + location)
+
 
 def get_location(args):
     channel = re.findall(pattern=r'\d+[\u4e00-\u9fa5a-zA-Z]+', string=args)
@@ -74,6 +73,10 @@ def split_boss(args):
         boss += '威尔,'
     if '组航' in args:
         boss += '组航,'
+    if 'c龙' in args.lower():
+        boss += 'c龙,'
+    if 'c扎' in args.lower():
+        boss += 'c扎,'
     return boss
 
 
