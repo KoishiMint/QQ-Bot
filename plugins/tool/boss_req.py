@@ -9,6 +9,7 @@ import config
 async def _(session: CommandSession):
     boss = split_boss(session.current_arg_text).split(',')
     boss.remove('')
+    boss_json = ''
     flag = True
     if len(boss) == 0:
         flag = False
@@ -20,7 +21,7 @@ async def _(session: CommandSession):
             if boss_json == boss_req:
                 flag = False
                 break
-    if flag:
+    if flag and json != '':
         config.BOSS_LIST.insert(len(config.BOSS_LIST), boss_json)
         await session.send('已成功预约' + split_boss(session.current_arg_text).replace(',', ' '))
 
