@@ -2,6 +2,8 @@ import nonebot
 from nonebot.permission import SUPERUSER
 from nonebot import on_command, CommandSession
 
+
+URSUS_TIMEZONE = 'Asia/Shanghai'
 URSUS_HOUR_LIST = "2, 3, 9, 10"
 URSUS_LAST_HOUR_LIST = "3, 10"
 
@@ -12,7 +14,8 @@ URSUS_GROUP_LIST = []
 @nonebot.scheduler.scheduled_job(
     'cron',
     hour=URSUS_HOUR_LIST,
-    minute="0, 30"
+    minute="0, 30",
+    timezone=URSUS_TIMEZONE
 )
 async def _():
     if URSUS_GROUP_LIST:
@@ -26,7 +29,8 @@ async def _():
 @nonebot.scheduler.scheduled_job(
     'cron',
     hour=URSUS_LAST_HOUR_LIST,
-    minute="50"
+    minute="50",
+    timezone=URSUS_TIMEZONE
 )
 async def _():
     if URSUS_GROUP_LIST:
