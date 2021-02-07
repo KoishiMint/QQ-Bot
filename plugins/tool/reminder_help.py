@@ -1,11 +1,11 @@
-from nonebot.permission import SUPERUSER
+from nonebot.permission import GROUP_OWNER, GROUP_ADMIN, SUPERUSER
 from nonebot import on_command, CommandSession
 from config import NICKNAME
 
 NICKNAME = list(NICKNAME)[0]
 
 
-@on_command('提醒帮助', aliases={'提醒使用帮助'}, permission=SUPERUSER)
+@on_command('提醒帮助', aliases={'提醒使用帮助'}, permission=GROUP_OWNER | GROUP_ADMIN | SUPERUSER)
 async def _(session: CommandSession):
     msg = (f"{NICKNAME}提醒小助手使用命令：\n"
            f"Ursus:\n"
