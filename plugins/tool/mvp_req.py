@@ -36,7 +36,7 @@ async def _(session: CommandSession):
     # week=None,
     # day_of_week="mon,tue,wed,thu,fri",
     # hour=7,
-    minute="13,14,43,44"
+    minute="10,13,14,40,43,44"
     # second="0, 15, 30, 45"
     # start_date=None,
     # end_date=None,
@@ -49,12 +49,11 @@ async def _():
         for group in config.QQ_GROUP:
             for qq in config.MVP_LIST:
                 if int(group) == int(config.MVP_LIST.get(qq)):
-                    cqm += '[CQ:at,qq=' + str(qq) + '] '
+                    cqm += '[CQ:at,qq=' + str(qq) + ']'
             if cqm != '':
-                cqm += '\n'
-            cqm += 'sbmvp马上要发了，在' + str(SB_MVP) + '线'
-            await bot.send_group_msg(group_id=group, message=cqm)
-            cqm = ''
+                cqm += '\n' + 'sbmvp马上要发了，在' + str(SB_MVP) + '线'
+                await bot.send_group_msg(group_id=group, message=cqm)
+                cqm = ''
 
 
 @on_command('求MVP', aliases={'求mvp', '有mvp吗'}, only_to_me=False)
