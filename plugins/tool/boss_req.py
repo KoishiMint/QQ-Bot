@@ -7,8 +7,11 @@ import config
 
 @on_command('求', only_to_me=False)
 async def _(session: CommandSession):
+    if not session.state.get('initialized'):
+        session.state['initialized'] = True
     boss = split_boss(session.current_arg_text).split(',')
     boss.remove('')
+    boss_json = ''
     flag = True
     if len(boss) == 0:
         flag = False
@@ -20,13 +23,15 @@ async def _(session: CommandSession):
             if boss_json == boss_req:
                 flag = False
                 break
-    if flag:
+    if flag and json != '':
         config.BOSS_LIST.insert(len(config.BOSS_LIST), boss_json)
         await session.send('已成功预约' + split_boss(session.current_arg_text).replace(',', ' '))
 
 
-@on_command('~', only_to_me=True)
+@on_command('谁要', only_to_me=True)
 async def _(session: CommandSession):
+    if not session.state.get('initialized'):
+        session.state['initialized'] = True
     boss = split_boss(session.current_arg_text).split(',')
     boss.remove('')
     location = get_location(session.current_arg_text)
@@ -39,10 +44,13 @@ async def _(session: CommandSession):
             if boss_json['qq_group'] == session.event.group_id and boss_json['boss'] == bosses:
                 reply_list += '[CQ:at,qq=' + str(boss_json['qq']) + '] '
                 config.BOSS_LIST.remove(boss_req)
-    await session.send(reply_list + '\n' +
-                       '[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\n' +
-                       'BOSS:' + split_boss(session.current_arg_text).replace(',', ' ') +
-                       '地点:' + location)
+    if reply_list != '':
+        await session.send(reply_list + '\n' +
+                           '[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\nBOSS:' + split_boss(session.current_arg_text).replace(',', ' ') +
+                           '地点:' + location)
+    else:
+        await session.send('[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\nBOSS:' + split_boss(session.current_arg_text).replace(',', ' ') +
+                           '地点:' + location)
 
 
 def get_location(args):
@@ -69,4 +77,19 @@ def split_boss(args):
         boss += '威尔,'
     if '组航' in args:
         boss += '组航,'
+    if 'c龙' in args.lower():
+        boss += 'c龙,'
+    if 'c扎' in args.lower():
+        boss += 'c扎,'
     return boss
+
+
+@on_command('BOSS预约使用帮助', aliases='boss预约使用帮助', only_to_me=False)
+async def _(session: CommandSession):
+    await session.send(
+        'BOSS预约使用帮助\n'
+        '使用以下文字来预约boss【求 BOSS名】\n'
+        '使用以下文字来发车boss【臭臭泥谁要 BOSS名 线路地点】\n'
+        '请注意【求】【臭臭泥谁要】之后都有一个空格，除线路外不能输入数字\n'
+        '目前支持的BOSS有:组航、三核、cra、斯乌、大米、路西德、威尔\n'
+    )
