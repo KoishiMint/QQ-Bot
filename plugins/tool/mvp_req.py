@@ -8,6 +8,8 @@ SB_MVP = 0
 
 @on_command('sbmvp在哪里', aliases={'sb几', 'sb在哪', 'mvp几', 'sb几线', 'SB几', 'SBMVP在哪里'}, only_to_me=False)
 async def _(session: CommandSession):
+    if not session.state.get('initialized'):
+        session.state['initialized'] = True
     global SB_MVP
     if SB_MVP == 0:
         await session.send('还没有SBMVP')
@@ -17,6 +19,9 @@ async def _(session: CommandSession):
 
 @on_command('sbmvp', aliases={'sb在', 'SB在', 'SBMVP', 'sb', 'SB'}, only_to_me=False)
 async def _(session: CommandSession):
+    if not session.state.get('initialized'):
+        session.state['initialized'] = True
+
     if session.current_arg_text.isdigit():
         if 31 > int(session.current_arg_text) > -1:
             global SB_MVP
@@ -59,6 +64,9 @@ async def _():
 
 @on_command('求MVP', aliases={'求mvp', '有mvp吗'}, only_to_me=False)
 async def _(session: CommandSession):
+    if not session.state.get('initialized'):
+        session.state['initialized'] = True
+
     if config.MVP_LIST.get(session.event.user_id) is not None:
         await session.send('已在通知列表内')
     else:
@@ -68,6 +76,9 @@ async def _(session: CommandSession):
 
 @on_command('取消MVP', aliases={'取消mvp'}, only_to_me=False)
 async def _(session: CommandSession):
+    if not session.state.get('initialized'):
+        session.state['initialized'] = True
+
     if config.MVP_LIST.get(session.event.user_id) is None:
         await session.send('未在通知列表内')
     else:
