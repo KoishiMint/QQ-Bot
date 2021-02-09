@@ -56,8 +56,3 @@ __all__ = [
     'MVP_LIST',
     'BOSS_LIST'
 ]
-
-# 用户自定义的配置
-QQ_GROUP = []
-MVP_LIST = {}
-BOSS_LIST = []

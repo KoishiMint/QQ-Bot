@@ -2,7 +2,8 @@ from nonebot import on_command, CommandSession
 import re
 import json
 
-import config
+BOSS_LIST = []
+BOSS_REQ_LIST = dict()
 
 
 @on_command('求', only_to_me=False)
@@ -11,7 +12,6 @@ async def _(session: CommandSession):
         session.state['initialized'] = True
     boss = split_boss(session.current_arg_text).split(',')
     boss.remove('')
-    boss_json = ''
     flag = True
     if len(boss) == 0:
         flag = False
@@ -19,13 +19,25 @@ async def _(session: CommandSession):
         boss_json = json.dumps({'qq': session.event.user_id,
                                 'qq_group': session.event.group_id,
                                 'boss': bosses})
-        for boss_req in config.BOSS_LIST:
+        print(boss_json)
+        for boss_req in BOSS_LIST:
             if boss_json == boss_req:
                 flag = False
                 break
-    if flag and json != '':
-        config.BOSS_LIST.insert(len(config.BOSS_LIST), boss_json)
-        await session.send('已成功预约' + split_boss(session.current_arg_text).replace(',', ' '))
+            flag = True
+        print('flag:' + str(flag))
+
+        if flag and boss_json != '':
+            BOSS_LIST.insert(len(BOSS_LIST), boss_json)
+            print('插入BOSS_LIST成功')
+            if BOSS_REQ_LIST.setdefault(session.event.group_id, dict()) is not None\
+                    and bosses in BOSS_REQ_LIST[session.event.group_id]:
+                BOSS_REQ_LIST[session.event.group_id][bosses] += 1
+            else:
+                BOSS_REQ_LIST[session.event.group_id][bosses] = 1
+
+            print(BOSS_REQ_LIST)
+    await session.send('已成功预约' + split_boss(session.current_arg_text).replace(',', ' '))
 
 
 @on_command('谁要', only_to_me=True)
@@ -38,19 +50,22 @@ async def _(session: CommandSession):
     reply_list = ''
     for bosses in boss:
         print('bosses=' + bosses)
-        for boss_req in config.BOSS_LIST:
+        for boss_req in BOSS_LIST:
             boss_json = json.loads(boss_req)
             print(boss_json)
             if boss_json['qq_group'] == session.event.group_id and boss_json['boss'] == bosses:
                 reply_list += '[CQ:at,qq=' + str(boss_json['qq']) + '] '
-                config.BOSS_LIST.remove(boss_req)
+                BOSS_LIST.remove(boss_req)
     if reply_list != '':
         await session.send(reply_list + '\n' +
-                           '[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\nBOSS:' + split_boss(session.current_arg_text).replace(',', ' ') +
+                           '[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\nBOSS:' + split_boss(
+            session.current_arg_text).replace(',', ' ') +
                            '地点:' + location)
     else:
-        await session.send('[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\nBOSS:' + split_boss(session.current_arg_text).replace(',', ' ') +
-                           '地点:' + location)
+        await session.send(
+            '[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\nBOSS:' + split_boss(session.current_arg_text).replace(
+                ',', ' ') +
+            '地点:' + location)
 
 
 def get_location(args):

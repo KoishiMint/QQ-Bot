@@ -1,9 +1,10 @@
 import nonebot
 
-import config
 from nonebot import on_command, CommandSession
 
 SB_MVP = 0
+QQ_GROUP = []
+MVP_LIST = {}
 
 
 @on_command('sbmvp在哪里', aliases={'sb几', 'sb在哪', 'mvp几', 'sb几线', 'SB几', 'SBMVP在哪里'}, only_to_me=False)
@@ -40,7 +41,7 @@ async def _(session: CommandSession):
     # week=None,
     # day_of_week="mon,tue,wed,thu,fri",
     # hour=7,
-    minute="10,13,14,40,43,44"
+    minute="13,14,43,44"
     # second="0, 15, 30, 45"
     # start_date=None,
     # end_date=None,
@@ -50,9 +51,9 @@ async def _():
     if SB_MVP != 0:
         bot = nonebot.get_bot()
         cqm = ''
-        for group in config.QQ_GROUP:
-            for qq in config.MVP_LIST:
-                if int(group) == int(config.MVP_LIST.get(qq)):
+        for group in QQ_GROUP:
+            for qq in MVP_LIST:
+                if int(group) == int(MVP_LIST.get(qq)):
                     cqm += '[CQ:at,qq=' + str(qq) + ']'
             if cqm != '':
                 cqm += '\n' + 'sbmvp马上要发了，在' + str(SB_MVP) + '线'
@@ -64,10 +65,10 @@ async def _():
 async def _(session: CommandSession):
     if not session.state.get('initialized'):
         session.state['initialized'] = True
-    if config.MVP_LIST.get(session.event.user_id) is not None:
+    if MVP_LIST.get(session.event.user_id) is not None:
         await session.send('已在通知列表内')
     else:
-        config.MVP_LIST[session.event.user_id] = session.event.group_id
+        MVP_LIST[session.event.user_id] = session.event.group_id
         await session.send('已添加通知列表')
 
 
@@ -75,10 +76,10 @@ async def _(session: CommandSession):
 async def _(session: CommandSession):
     if not session.state.get('initialized'):
         session.state['initialized'] = True
-    if config.MVP_LIST.get(session.event.user_id) is None:
+    if MVP_LIST.get(session.event.user_id) is None:
         await session.send('未在通知列表内')
     else:
-        config.MVP_LIST.pop(session.event.user_id)
+        MVP_LIST.pop(session.event.user_id)
         await session.send('已取消通知列表')
 
 
