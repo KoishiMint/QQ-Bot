@@ -1,9 +1,13 @@
+import re
+
 import nonebot
 
-import config
 from nonebot import on_command, CommandSession
+from nonebot.permission import SUPERUSER
 
 SB_MVP = 0
+QQ_GROUP = []
+MVP_LIST = {}
 
 
 @on_command('sbmvp在哪里', aliases={'sb几', 'sb在哪', 'mvp几', 'sb几线', 'SB几', 'SBMVP在哪里'}, only_to_me=False)
@@ -22,11 +26,15 @@ async def _(session: CommandSession):
     if not session.state.get('initialized'):
         session.state['initialized'] = True
 
-    if session.current_arg_text.isdigit():
-        if 31 > int(session.current_arg_text) > -1:
+    channel = re.findall(pattern=r'\d+', string=session.current_arg_text)
+    if len(channel) == 1:
+        if 31 > int(channel[0]) > -1:
             global SB_MVP
-            SB_MVP = int(session.current_arg_text)
-            await session.send('已修改SBMVP在' + str(SB_MVP) + '线')
+            SB_MVP = int(channel[0])
+            bot = nonebot.get_bot()
+            cqm = '已修改mvp线路，目前在' + str(SB_MVP) + '线'
+            for group in QQ_GROUP:
+                await bot.send_group_msg(group_id=group, message=cqm)
         else:
             await session.send('输入的线路有误')
     else:
@@ -51,9 +59,9 @@ async def _():
     if SB_MVP != 0:
         bot = nonebot.get_bot()
         cqm = ''
-        for group in config.QQ_GROUP:
-            for qq in config.MVP_LIST:
-                if int(group) == int(config.MVP_LIST.get(qq)):
+        for group in QQ_GROUP:
+            for qq in MVP_LIST:
+                if int(group) == int(MVP_LIST.get(qq)):
                     cqm += '[CQ:at,qq=' + str(qq) + '] '
             if cqm != '':
                 cqm += '\n'
@@ -67,10 +75,10 @@ async def _(session: CommandSession):
     if not session.state.get('initialized'):
         session.state['initialized'] = True
 
-    if config.MVP_LIST.get(session.event.user_id) is not None:
+    if MVP_LIST.get(session.event.user_id) is not None:
         await session.send('已在通知列表内')
     else:
-        config.MVP_LIST[session.event.user_id] = session.event.group_id
+        MVP_LIST[session.event.user_id] = session.event.group_id
         await session.send('已添加通知列表')
 
 
@@ -79,10 +87,10 @@ async def _(session: CommandSession):
     if not session.state.get('initialized'):
         session.state['initialized'] = True
 
-    if config.MVP_LIST.get(session.event.user_id) is None:
+    if MVP_LIST.get(session.event.user_id) is None:
         await session.send('未在通知列表内')
     else:
-        config.MVP_LIST.pop(session.event.user_id)
+        MVP_LIST.pop(session.event.user_id)
         await session.send('已取消通知列表')
 
 
@@ -94,3 +102,21 @@ async def _(session: CommandSession):
                        '使用以下文字来申请让机器人每次在MVP要发之前提醒你: 求MVP, 求mvp, 有mvp吗\n'
                        '使用以下文字来取消MVP提醒: 取消MVP, 取消mvp\n'
                        '目前默认每小时13/14/43/44分的时候提醒')
+
+
+@on_command('开启MVP', aliases={'开启mvp'}, permission=SUPERUSER)
+async def _(session: CommandSession):
+    if session.event.group_id not in QQ_GROUP:
+        QQ_GROUP.insert(0, str(session.event.group_id))
+        await session.send('已添加本群MVP功能')
+    else:
+        await session.send('本群已在MVP列表中')
+
+
+@on_command('关闭MVP', aliases={'关闭mvp'}, permission=SUPERUSER)
+async def _(session: CommandSession):
+    if session.event.group_id in QQ_GROUP:
+        QQ_GROUP.remove(str(session.event.group_id))
+        await session.send('已关闭本群MVP功能')
+    else:
+        await session.send('本群未在MVP列表中')

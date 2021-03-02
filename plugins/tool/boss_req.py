@@ -2,7 +2,7 @@ from nonebot import on_command, CommandSession
 import re
 import json
 
-import config
+BOSS_LIST = []
 
 
 @on_command('求', only_to_me=False)
@@ -11,7 +11,6 @@ async def _(session: CommandSession):
         session.state['initialized'] = True
     boss = split_boss(session.current_arg_text).split(',')
     boss.remove('')
-    boss_json = ''
     flag = True
     if len(boss) == 0:
         flag = False
@@ -19,13 +18,43 @@ async def _(session: CommandSession):
         boss_json = json.dumps({'qq': session.event.user_id,
                                 'qq_group': session.event.group_id,
                                 'boss': bosses})
-        for boss_req in config.BOSS_LIST:
+        for boss_req in BOSS_LIST:
             if boss_json == boss_req:
                 flag = False
                 break
-    if flag and json != '':
-        config.BOSS_LIST.insert(len(config.BOSS_LIST), boss_json)
-        await session.send('已成功预约' + split_boss(session.current_arg_text).replace(',', ' '))
+        if flag and json != '':
+            BOSS_LIST.insert(len(BOSS_LIST), boss_json)
+            flag = True
+    await session.send('已成功预约' + split_boss(session.current_arg_text).replace(',', ' '))
+
+
+@on_command('查看需求', only_to_me=True)
+async def _(session: CommandSession):
+    boss_list = {
+        '组航': 0,
+        'c龙': 0,
+        'c扎': 0,
+        '三核': 0,
+        'cra': 0,
+        'mag': 0,
+        '斯乌': 0,
+        '大米': 0,
+        '路西德': 0,
+        '威尔': 0
+    }
+    cqm = '目前需求的BOSS数量如下：\n'
+    flag = False
+    for boss_req in BOSS_LIST:
+        boss_json = json.loads(boss_req)
+        if boss_json['qq_group'] == session.event.group_id:
+            boss_list[boss_json['boss']] += 1
+            flag = True
+    if flag:
+        for index in boss_list:
+            cqm += index + ':' + str(boss_list[index]) + '人\n'
+        await session.send(message=cqm)
+    else:
+        await session.send(message='还没有boss需求呢')
 
 
 @on_command('谁要', only_to_me=True)
@@ -37,13 +66,11 @@ async def _(session: CommandSession):
     location = get_location(session.current_arg_text)
     reply_list = ''
     for bosses in boss:
-        print('bosses=' + bosses)
-        for boss_req in config.BOSS_LIST:
+        for boss_req in BOSS_LIST:
             boss_json = json.loads(boss_req)
-            print(boss_json)
             if boss_json['qq_group'] == session.event.group_id and boss_json['boss'] == bosses:
                 reply_list += '[CQ:at,qq=' + str(boss_json['qq']) + '] '
-                config.BOSS_LIST.remove(boss_req)
+                BOSS_LIST.remove(boss_req)
     if reply_list != '':
         await session.send(reply_list + '\n' +
                            '[CQ:at,qq=' + str(session.event.user_id) + '] 大佬开车啦\nBOSS:' + split_boss(session.current_arg_text).replace(',', ' ') +
@@ -58,7 +85,7 @@ def get_location(args):
     if len(channel) == 1:
         return channel[0]
     else:
-        return None
+        return '不知道呢'
 
 
 def split_boss(args):
@@ -81,6 +108,8 @@ def split_boss(args):
         boss += 'c龙,'
     if 'c扎' in args.lower():
         boss += 'c扎,'
+    if 'mag' in args.lower():
+        boss += 'mag,'
     return boss
 
 
@@ -91,5 +120,6 @@ async def _(session: CommandSession):
         '使用以下文字来预约boss【求 BOSS名】\n'
         '使用以下文字来发车boss【臭臭泥谁要 BOSS名 线路地点】\n'
         '请注意【求】【臭臭泥谁要】之后都有一个空格，除线路外不能输入数字\n'
-        '目前支持的BOSS有:组航、三核、cra、斯乌、大米、路西德、威尔\n'
+        '使用以下文字来查看当前boss需求【臭臭泥 查看需求】'    
+        '目前支持的BOSS有:组航、C龙、C扎、三核、cra、mag、斯乌、大米、路西德、威尔\n'
     )
