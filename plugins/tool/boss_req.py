@@ -12,6 +12,7 @@ async def _(session: CommandSession):
     boss = split_boss(session.current_arg_text).split(',')
     boss.remove('')
     flag = True
+    reply = False
     if len(boss) == 0:
         flag = False
     for bosses in boss:
@@ -24,8 +25,10 @@ async def _(session: CommandSession):
                 break
         if flag and json != '':
             BOSS_LIST.insert(len(BOSS_LIST), boss_json)
+            reply = True
             flag = True
-    await session.send('已成功预约' + split_boss(session.current_arg_text).replace(',', ' '))
+    if reply:
+        await session.send('已成功预约' + split_boss(session.current_arg_text).replace(',', ' '))
 
 
 @on_command('查看需求', only_to_me=True)
