@@ -38,6 +38,7 @@ async def _(session: CommandSession):
         'c龙': 0,
         'c扎': 0,
         '三核': 0,
+        '光秀': 0,
         'cra': 0,
         'mag': 0,
         '斯乌': 0,
@@ -113,6 +114,8 @@ def split_boss(args):
         boss += 'c扎,'
     if 'mag' in args.lower():
         boss += 'mag,'
+    if '光秀' in args.lower():
+        boss += '光秀,'
     return boss
 
 
