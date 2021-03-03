@@ -1,8 +1,11 @@
 import hashlib
+import json
 import time
 from urllib import request
 
+import requests
 from nonebot import on_command, CommandSession
+from google_trans_new import google_translator
 import pytesseract
 from PIL import Image
 
@@ -22,7 +25,17 @@ async def _(session: CommandSession):
         # md = hashlib.md5()
         # md.update(file.read())
         # res = md.hexdigest()
-        await session.send(message='识别结果：\n' + parsed_text)
+        translator = google_translator()
+        translated_text = translator.translate(parsed_text, lang_tgt='zh-CN')
+        await session.send(message='识别结果：\n' + parsed_text + '\n翻译结果：\n' + translated_text)
+
+
+@on_command('翻译', only_to_me=False)
+async def _(session: CommandSession):
+    original_text = session.current_arg_text
+    translator = google_translator()
+    translated_text = translator.translate(original_text, lang_tgt='zh-CN')
+    await session.send('翻译结果\n' + translated_text)
 
 
 def mkdir(path):
