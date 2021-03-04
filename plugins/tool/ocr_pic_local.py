@@ -20,7 +20,8 @@ async def _(session: CommandSession):
     for qq_image in session.current_arg_images:
         filename = 'pic//' + time.strftime("%Y%m%d-%H%M%S-", time.localtime()) + qq + '.jpg'
         request.urlretrieve(qq_image, filename)
-        parsed_text = pytesseract.image_to_string(Image.open(filename)).strip()
+        custom_oem_psm_config = r'--oem 3 --psm 6'
+        parsed_text = pytesseract.image_to_string(Image.open(filename), lang='eng+kor', config=custom_oem_psm_config)
         # file = open(filename, "rb")
         # md = hashlib.md5()
         # md.update(file.read())
